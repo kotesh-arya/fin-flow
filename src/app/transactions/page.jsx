@@ -9,6 +9,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import TransactionModal from "@/app//components/TransactionModal"; // Adjust the path as needed
+import Image from "next/image";
 
 export default function Transactions() {
   const { data: session } = useSession();
@@ -77,7 +78,7 @@ export default function Transactions() {
                     {session.user.name.charAt(0).toUpperCase()}
                   </span>
                 ) : (
-                  <img
+                  <Image
                     src={session.user.image}
                     alt="user-avatar"
                     className="h-10 w-10 rounded-full border-2 border-white"
