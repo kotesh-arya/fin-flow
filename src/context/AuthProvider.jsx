@@ -1,16 +1,13 @@
 "use client";
 import { SessionProvider } from "next-auth/react";
 
-export  function App({
-  Component,
-  pageProps: { session, ...pageProps },
-}) {
+export function App({ Component, pageProps: { session, ...pageProps } }) {
   return (
     <SessionProvider session={session}>
       {Component.auth ? (
-        <Auth>
+        <AuthProvider>
           <Component {...pageProps} />
-        </Auth>
+        </AuthProvider>
       ) : (
         <Component {...pageProps} />
       )}
@@ -18,11 +15,6 @@ export  function App({
   );
 }
 
-export  function AuthProvider({ children }) {
-  return (
-    <SessionProvider>
-{children}
-    </SessionProvider>
-  )
-  ;
+export function AuthProvider({ children }) {
+  return <SessionProvider>{children}</SessionProvider>;
 }

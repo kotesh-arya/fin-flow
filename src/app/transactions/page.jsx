@@ -70,12 +70,16 @@ export default function Transactions() {
       );
       console.log("response", submissionResponse);
       const addedTransaction = submissionResponse.data.savedTransaction;
-  setTransactions([...transactions, addedTransaction]);
+      setTransactions([...transactions, addedTransaction]);
     } catch (error) {
       console.log("error in submitting a transaction", error);
     }
   };
-
+  if (table.getRowModel()?.rows.length === 0) {
+    <div className="h-40 flex flex-row items-center justify-center w-full  border-2 border-green-600">
+      No Transactions, Feel free to submit one
+    </div>;
+  }
   return (
     <div className="min-h-screen flex flex-col bg-gradient-to-r from-indigo-500 via-purple-500 to-pink-500">
       {/* Navbar */}
@@ -123,68 +127,61 @@ export default function Transactions() {
           Transaction History
         </h1>
 
-        {/* Responsive Table */}
-        <div className="overflow-x-auto shadow-xl rounded-lg backdrop-blur-md bg-white/60">
-          <table className="table-auto min-w-full bg-transparent text-sm text-left text-gray-700 dark:text-gray-200">
-            <thead className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
-              {table.getHeaderGroups().map((headerGroup) => (
-                <tr key={headerGroup.id}>
-                  {headerGroup.headers.map((header) => (
-                    <th
-                      key={header.id}
-                      className="px-6 py-3 text-xs font-bold text-white uppercase border-b-2 border-indigo-600"
-                    >
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </th>
-                  ))}
-                </tr>
-              ))}
-            </thead>
-            <tbody>
-              {loading
-                ? // Skeleton rows
-                  [...Array(5)].map((_, i) => (
-                    <tr key={i} className="animate-pulse bg-gray-200">
-                      <td className="px-6 py-4">
-                        <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+        {/* Conditional rendering for no transactions */}
+        {loading ? (
+          <div className="h-40 flex flex-row items-center justify-center w-full font-bold">
+            Loading transactions...
+          </div>
+        ) : transactions?.length === 0 ? (
+          <div className="h-40 flex flex-row items-center justify-center w-full text-black font-bold">
+            No Transactions to show, feel free to submit one
+          </div>
+        ) : (
+          // Show table if there are transactions
+          <div className="overflow-x-auto shadow-xl rounded-lg backdrop-blur-md bg-white/60">
+            <table className="table-auto min-w-full bg-transparent text-sm text-left text-gray-700 dark:text-gray-200">
+              <thead className="bg-gradient-to-r from-blue-500 to-indigo-500 text-white">
+                {table.getHeaderGroups().map((headerGroup) => (
+                  <tr key={headerGroup.id}>
+                    {headerGroup.headers.map((header) => (
+                      <th
+                        key={header.id}
+                        className="px-6 py-3 text-xs font-bold text-white uppercase border-b-2 border-indigo-600"
+                      >
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </th>
+                    ))}
+                  </tr>
+                ))}
+              </thead>
+              <tbody className="w-full">
+                {table.getRowModel()?.rows?.map((row) => (
+                  <tr
+                    key={row.id}
+                    className="bg-white/60 border-b dark:bg-gray-800/60 dark:border-gray-700 hover:bg-gray-100/60 dark:hover:bg-gray-900/60"
+                  >
+                    {row.getVisibleCells().map((cell) => (
+                      <td
+                        key={cell.id}
+                        className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300"
+                      >
+                        {flexRender(
+                          cell.column.columnDef.cell,
+                          cell.getContext()
+                        )}
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="h-4 bg-gray-300 rounded w-1/2"></div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="h-4 bg-gray-300 rounded w-full"></div>
-                      </td>
-                      <td className="px-6 py-4">
-                        <div className="h-4 bg-gray-300 rounded w-1/4"></div>
-                      </td>
-                    </tr>
-                  ))
-                : table.getRowModel()?.rows?.map((row) => (
-                    <tr
-                      key={row.id}
-                      className="bg-white/60 border-b dark:bg-gray-800/60 dark:border-gray-700 hover:bg-gray-100/60 dark:hover:bg-gray-900/60"
-                    >
-                      {row.getVisibleCells().map((cell) => (
-                        <td
-                          key={cell.id}
-                          className="px-6 py-4 text-sm text-gray-900 dark:text-gray-300"
-                        >
-                          {flexRender(
-                            cell.column.columnDef.cell,
-                            cell.getContext()
-                          )}
-                        </td>
-                      ))}
-                    </tr>
-                  ))}
-            </tbody>
-          </table>
-        </div>
+                    ))}
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
 
         {/* Transaction Modal */}
         <TransactionModal
