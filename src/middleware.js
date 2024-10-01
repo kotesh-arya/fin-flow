@@ -1,24 +1,41 @@
-import { NextResponse, NextRequest } from "next/server";
-export { default } from "next-auth/middleware";
+import { NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 
-// This function can be marked `async` if using `await` inside
-export async function middleware(request) {
-  const token = await getToken({ req: request });
-  const url = request.nextUrl;
+export async function middleware(req) {
+  const secret = process.env.NEXTAUTH_SECRET;
 
-  if (
-    (token && url.pathname.startsWith("/sign-in")) ||
-    url.pathname.startsWith("/sign-up") ||
-    url.pathname.startsWith("/verify") ||
-    url.pathname.startsWith("/")
-  ) {
-    return NextResponse.redirect(new URL("/", request.url));
+  // Retrieve token for the request
+  const token = await getToken({
+    req,
+    secret,
+    cookieName: "next-auth.session-token",
+    raw: true,
+  });
+
+  // Extract the pathname from the request URL
+  const { pathname } = req.nextUrl;
+
+  // Check if the user is trying to access the login page
+  if (pathname === "/login") {
+    // If the user is already logged in and tries to access /login, redirect to /transactions
+    if (token) {
+      return NextResponse.redirect(new URL("/transactions", req.url));
+    }
+    // Allow access to the login page if the user is not logged in
+    return NextResponse.next();
   }
-  return NextResponse.redirect(new URL("/home", request.url));
+
+  // For all other routes, check if the token exists (i.e., user is authenticated)
+  if (!token) {
+    console.log("No token found. User is unauthenticated.");
+    // Redirect unauthenticated users to the login page
+    return NextResponse.redirect(new URL("/login", req.url));
+  }
+
+  // If the user is authenticated, allow access to the protected routes
+  return NextResponse.next();
 }
 
-// See "Matching Paths" below to learn more
 export const config = {
-  matcher: ["/sign-in", "/sign-up", "/", "/dashboard/:path*", "/verify/:path*"],
+  matcher: ["/", "/login", "/transactions/:path*"], // Apply middleware to these routes
 };

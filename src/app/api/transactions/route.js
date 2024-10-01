@@ -56,7 +56,7 @@ export async function GET(req) {
     let transactions;
 
     // If the user is a Manager, return all transactions
-    if (session.user.role === "Manager") {
+    if (session.user.email === "koteswarraomudila@gmail.com") {
       transactions = await Transaction.find({});
     } else {
       // Otherwise, return only the user's own transactions

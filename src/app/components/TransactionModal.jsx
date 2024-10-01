@@ -1,29 +1,9 @@
 // components/TransactionModal.js
 import React, { useState } from "react";
-import Pill from "react-pill";
 const TransactionModal = ({ isOpen, onClose, onSubmit }) => {
-  const data = [
-    {
-      label: " Tab 1",
-      bgColor: "#ffcccb",
-    },
-    {
-      label: " Tab 2",
-      bgColor: "#b0e57c",
-    },
-    {
-      label: " Tab 3",
-      bgColor: "#87ceeb",
-    },
-  ];
+ 
 
-  const handleSelect = (event, index) => {
-    console.log(`Selected Pill: ${index}`);
-  };
-
-  const handleClose = (index) => {
-    console.log(`Closed Pill: ${index}`);
-  };
+ 
 
   const [transactionType, setTransactionType] = useState("");
   const [amount, setAmount] = useState("");
@@ -50,14 +30,6 @@ const TransactionModal = ({ isOpen, onClose, onSubmit }) => {
           New Transaction
         </h2>
 
-        <Pill
-          data={data}
-          onSelect={handleSelect}
-          onClose={handleClose}
-          rounded={true}
-          containerClassName="pill-container"
-          pillClassName="custom-pill"
-        />
         <form
           onSubmit={handleSubmit}
           onClick={(e) => {
@@ -72,7 +44,7 @@ const TransactionModal = ({ isOpen, onClose, onSubmit }) => {
               type="text"
               value={transactionType}
               onChange={(e) => setTransactionType(e.target.value)}
-              className="border rounded w-full p-2"
+              className="border rounded w-full p-2 text-black"
               required
             />
           </div>
@@ -84,7 +56,7 @@ const TransactionModal = ({ isOpen, onClose, onSubmit }) => {
               type="number"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="border rounded w-full p-2"
+              className="border rounded w-full p-2 text-black"
               required
             />
           </div>
@@ -96,7 +68,7 @@ const TransactionModal = ({ isOpen, onClose, onSubmit }) => {
               type="text"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
-              className="border rounded w-full p-2"
+              className="border rounded w-full p-2 text-black"
               required
             />
           </div>

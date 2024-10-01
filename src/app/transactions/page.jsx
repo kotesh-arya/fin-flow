@@ -9,7 +9,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table";
 import TransactionModal from "@/app//components/TransactionModal"; // Adjust the path as needed
-import Image from "next/image";
+import axios from "axios";
 
 export default function Transactions() {
   const { data: session } = useSession();
@@ -48,6 +48,8 @@ export default function Transactions() {
   });
 
   useEffect(() => {
+    console.log(session, "session from useeffect");
+
     if (session) {
       setLoading(true);
       fetch("/api/transactions")
@@ -59,9 +61,19 @@ export default function Transactions() {
     }
   }, [session]);
 
-  const handleNewTransaction = (newTransaction) => {
+  const handleNewTransaction = async (newTransaction) => {
     // Here you would typically send a request to your API to save the new transaction
-    setTransactions((prev) => [...prev, newTransaction]);
+    try {
+      const submissionResponse = await axios.post(
+        "/api/transactions",
+        newTransaction
+      );
+      console.log("response", submissionResponse);
+      const addedTransaction = submissionResponse.data.savedTransaction;
+  setTransactions([...transactions, addedTransaction]);
+    } catch (error) {
+      console.log("error in submitting a transaction", error);
+    }
   };
 
   return (
@@ -78,11 +90,13 @@ export default function Transactions() {
                     {session.user.name.charAt(0).toUpperCase()}
                   </span>
                 ) : (
-                  <Image
+                  <img
                     src={session.user.image}
                     alt="user-avatar"
                     className="h-10 w-10 rounded-full border-2 border-white"
                     onError={() => setImageError(true)}
+                    // width={10}
+                    // height={10}
                   />
                 )}
                 <button
