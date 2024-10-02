@@ -24,10 +24,13 @@ export const authOptions = {
       return session; // Return the session object as-is
     },
     async jwt({ token, user }) {
-      
       // Log the JWT token and user information
       // console.log("JWT callback: ", token, user);
       return token; // Return the token object as-is
+    },
+    async redirect({ url, baseUrl }) {
+      // Custom redirect logic
+      return baseUrl; // Default: redirect to the base URL
     },
   },
 };
