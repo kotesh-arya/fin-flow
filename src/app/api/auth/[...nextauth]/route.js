@@ -30,7 +30,13 @@ export const authOptions = {
     },
     async redirect({ url, baseUrl }) {
       // Custom redirect logic
-      return baseUrl; // Default: redirect to the base URL
+      if (url === `${baseUrl}/transactions`) {
+        return `${baseUrl}/transactions`;
+      }
+      console.log(" URL ------------------------->", url);
+
+      console.log("BASE URL ------------------------->", baseUrl);
+      return; // Default: redirect to the base URL
     },
   },
 };
