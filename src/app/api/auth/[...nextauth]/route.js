@@ -30,7 +30,7 @@ export const authOptions = {
     },
     async redirect({ url, baseUrl }) {
       // Custom redirect logic
-      if (url === `${baseUrl}/transactions`) {
+      if (url === `${baseUrl}`) {
         return `${baseUrl}/transactions`;
       }
       console.log(" URL ------------------------->", url);
