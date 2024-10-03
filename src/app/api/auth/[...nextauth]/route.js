@@ -12,6 +12,7 @@ export const authOptions = {
   session: {
     strategy: "jwt", // Make sure this is set to "jwt"
   },
+  debug: true, // Add this line to enable logging
   callbacks: {
     async signIn({ user, account, profile }) {
       // Log when the user signs in
